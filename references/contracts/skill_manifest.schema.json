@@ -1,0 +1,365 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/yandex-cloud-skill/skill_manifest.schema.json",
+  "title": "Yandex Cloud Skill Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "canonical_source",
+    "routing",
+    "languages",
+    "output",
+    "yc_cli_policy",
+    "sources_policy",
+    "auth_decision_table",
+    "mcp"
+  ],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "canonical_source": {
+      "type": "string",
+      "minLength": 1
+    },
+    "routing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["task_workflow"],
+      "properties": {
+        "task_workflow": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^references/workflows/.+\\.md$"
+          }
+        }
+      }
+    },
+    "languages": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["profiles"],
+      "properties": {
+        "profiles": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string",
+            "pattern": "^references/languages/.+\\.md$"
+          }
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["envelope_v2"],
+      "properties": {
+        "envelope_v2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["version", "required_fields"],
+          "properties": {
+            "version": {
+              "type": "string",
+              "const": "2.0"
+            },
+            "required_fields": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "version",
+                  "status",
+                  "data",
+                  "checks",
+                  "limitations",
+                  "sources",
+                  "errors"
+                ]
+              },
+              "minItems": 7,
+              "uniqueItems": true
+            }
+          }
+        }
+      }
+    },
+    "yc_cli_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "preflight_commands",
+        "profile_confirmation_template",
+        "read_only_verbs",
+        "mutating_verbs",
+        "forbidden_secret_commands",
+        "safety_rules"
+      ],
+      "properties": {
+        "preflight_commands": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "profile_confirmation_template": {
+          "type": "string",
+          "minLength": 1
+        },
+        "read_only_verbs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "mutating_verbs": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "forbidden_secret_commands": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "safety_rules": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    },
+    "sources_policy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["default_docs_language", "prefer_ru_docs", "tiers"],
+      "properties": {
+        "default_docs_language": {
+          "type": "string",
+          "enum": ["ru", "en"]
+        },
+        "prefer_ru_docs": {
+          "type": "boolean"
+        },
+        "tiers": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["tier1", "tier2", "tier3"],
+          "properties": {
+            "tier1": {
+              "$ref": "#/$defs/urlArray"
+            },
+            "tier2": {
+              "$ref": "#/$defs/urlArray"
+            },
+            "tier3": {
+              "$ref": "#/$defs/urlArray"
+            }
+          }
+        }
+      }
+    },
+    "auth_decision_table": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "credential_types",
+        "defaults",
+        "service_account_iam_token_tree",
+        "methods"
+      ],
+      "properties": {
+        "credential_types": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "defaults": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["workload_overrides", "principal_defaults"],
+          "properties": {
+            "workload_overrides": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "principal_defaults": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "service_account_iam_token_tree": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["field", "when_true", "when_false"],
+            "properties": {
+              "field": {
+                "type": "string",
+                "minLength": 1
+              },
+              "when_true": {
+                "type": "string",
+                "minLength": 1
+              },
+              "when_false": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "methods": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["rotation_mode", "summary"],
+            "properties": {
+              "rotation_mode": {
+                "type": "string",
+                "enum": ["runtime", "scheduled", "manual"]
+              },
+              "summary": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      }
+    },
+    "mcp": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_repo",
+        "catalog_path",
+        "registry_path",
+        "tools_reference",
+        "tool_error_messages",
+        "toolkit_supported_services",
+        "toolkit_supported_tools",
+        "intent_hints_by_name",
+        "service_intents",
+        "task_type_intents",
+        "non_mcp_policy"
+      ],
+      "properties": {
+        "source_repo": {
+          "type": "string",
+          "format": "uri"
+        },
+        "catalog_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "registry_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tools_reference": {
+          "type": "string",
+          "format": "uri"
+        },
+        "tool_error_messages": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["permission_denied"],
+          "properties": {
+            "permission_denied": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "toolkit_supported_services": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "toolkit_supported_tools": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "intent_hints_by_name": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/stringArray"
+          }
+        },
+        "service_intents": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/stringArray"
+          }
+        },
+        "task_type_intents": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/$defs/stringArrayMaybeEmpty"
+          }
+        },
+        "non_mcp_policy": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["selection_principle", "default"],
+          "properties": {
+            "selection_principle": {
+              "type": "string",
+              "enum": ["mcp_first_then_generic_fallback"]
+            },
+            "default": {
+              "$ref": "#/$defs/nonMcpPolicy"
+            },
+            "by_task_type": {
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/$defs/nonMcpPolicy"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "minItems": 1
+    },
+    "stringArrayMaybeEmpty": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "urlArray": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "format": "uri"
+      },
+      "minItems": 1
+    },
+    "nonMcpPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["interfaces", "official_sources"],
+      "properties": {
+        "interfaces": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "official_sources": {
+          "$ref": "#/$defs/urlArray"
+        },
+        "next_steps": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,212 @@
+version: 1
+source_repo: "https://github.com/yandex-cloud/mcp"
+generated_at: "2026-02-18"
+servers:
+  -
+    name: "documentation-mcp-server"
+    repo_path: "servers/documentation-mcp-server"
+    discovery_priority: 10
+    intents:
+      - "docs"
+      - "documentation"
+      - "reference"
+    auth:
+      mode: "none"
+      note: "No authorization credentials needed (README)."
+    install:
+      transport: "http"
+      url: "https://docs.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "unsupported"
+      cloud_id: "unsupported"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/documentation-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "active"
+  -
+    name: "toolkit-mcp-server"
+    repo_path: "servers/toolkit-mcp-server"
+    discovery_priority: 20
+    intents:
+      - "toolkit"
+      - "infrastructure"
+      - "compute"
+      - "vpc"
+      - "iam"
+      - "storage"
+      - "object-storage"
+      - "ydb"
+    auth:
+      mode: "iam_token"
+      note: "Authorization header uses Bearer IAM token (README)."
+    install:
+      transport: "http"
+      url: "https://toolkit.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "optional"
+      cloud_id: "optional"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/toolkit-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "active"
+  -
+    name: "functions-mcp-server"
+    repo_path: "servers/functions-mcp-server"
+    discovery_priority: 30
+    intents:
+      - "functions"
+      - "serverless"
+    auth:
+      mode: "iam_token"
+      note: "Authorization header uses Bearer IAM token (README)."
+    install:
+      transport: "http"
+      url: "https://functions.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "required"
+      cloud_id: "unsupported"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/functions-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "experimental"
+  -
+    name: "containers-mcp-server"
+    repo_path: "servers/containers-mcp-server"
+    discovery_priority: 35
+    intents:
+      - "containers"
+      - "serverless"
+    auth:
+      mode: "iam_token"
+      note: "Authorization header uses Bearer IAM token (README)."
+    install:
+      transport: "http"
+      url: "https://containers.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "required"
+      cloud_id: "unsupported"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/containers-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "experimental"
+  -
+    name: "workflows-mcp-server"
+    repo_path: "servers/workflows-mcp-server"
+    discovery_priority: 40
+    intents:
+      - "workflows"
+      - "serverless"
+    auth:
+      mode: "iam_token"
+      note: "Authorization header uses Bearer IAM token (README)."
+    install:
+      transport: "http"
+      url: "https://workflows.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "required"
+      cloud_id: "unsupported"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/workflows-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "experimental"
+  -
+    name: "triggers-mcp-server"
+    repo_path: "servers/triggers-mcp-server"
+    discovery_priority: 45
+    intents:
+      - "triggers"
+      - "serverless"
+    auth:
+      mode: "iam_token"
+      note: "Authorization header uses Bearer IAM token (README)."
+    install:
+      transport: "http"
+      url: "https://triggers.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "required"
+      cloud_id: "unsupported"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/triggers-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "experimental"
+  -
+    name: "apigateway-mcp-server"
+    repo_path: "servers/apigateway-mcp-server"
+    discovery_priority: 50
+    intents:
+      - "apigateway"
+      - "api-gateway"
+    auth:
+      mode: "iam_token"
+      note: "Authorization header uses Bearer IAM token (README)."
+    install:
+      transport: "http"
+      url: "https://apigateway.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "required"
+      cloud_id: "unsupported"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/apigateway-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "experimental"
+  -
+    name: "search-mcp-server"
+    repo_path: "servers/search-mcp-server"
+    discovery_priority: 60
+    intents:
+      - "search"
+    auth:
+      mode: "iam_token"
+      note: "Authorization header uses Bearer IAM token (README)."
+    install:
+      transport: "http"
+      url: "https://search.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "required"
+      cloud_id: "unsupported"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/search-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "active"
+  -
+    name: "mcpgateway-mcp-server"
+    repo_path: "servers/mcpgateway-mcp-server"
+    discovery_priority: 70
+    intents:
+      - "mcpgateway"
+      - "integration"
+      - "serverless"
+    auth:
+      mode: "iam_token"
+      note: "Authorization header uses Bearer IAM token (README)."
+    install:
+      transport: "http"
+      url: "https://mcpgateway.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "required"
+      cloud_id: "unsupported"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/mcpgateway-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "experimental"
+  -
+    name: "datacatalog-consumer-mcp-server"
+    repo_path: "servers/datacatalog-consumer-mcp-server"
+    discovery_priority: 80
+    intents:
+      - "datacatalog"
+      - "metadata-catalog"
+      - "inventory"
+    auth:
+      mode: "iam_token"
+      note: "Authorization header uses Bearer IAM token (README)."
+    install:
+      transport: "http"
+      url: "https://datacatalog-consumer.mcp.cloud.yandex.net/mcp"
+    headers:
+      folder_id: "unsupported"
+      cloud_id: "unsupported"
+    readme_url: "https://github.com/yandex-cloud/mcp/tree/master/servers/datacatalog-consumer-mcp-server"
+    verified_at: "2026-02-18"
+    verified_by: "script"
+    status: "active"

@@ -1,0 +1,156 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.local/yandex-cloud-skill/mcp_catalog.schema.json",
+  "title": "YC MCP Catalog",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "source_repo", "generated_at", "servers"],
+  "properties": {
+    "version": {
+      "type": "integer",
+      "const": 1
+    },
+    "source_repo": {
+      "type": "string",
+      "format": "uri"
+    },
+    "generated_at": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "servers": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "repo_path",
+          "discovery_priority",
+          "intents",
+          "auth",
+          "install",
+          "headers",
+          "readme_url",
+          "verified_at",
+          "verified_by",
+          "status"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "repo_path": {
+            "type": "string",
+            "pattern": "^servers/[a-z0-9-]+$"
+          },
+          "discovery_priority": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "intents": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9-]+$"
+            },
+            "uniqueItems": true
+          },
+          "auth": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["mode", "note"],
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": ["none", "iam_token", "other", "unknown"]
+              },
+              "note": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "install": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["transport"],
+            "properties": {
+              "transport": {
+                "type": "string",
+                "enum": ["http", "stdio"]
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "command": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "allOf": [
+              {
+                "if": {
+                  "properties": {
+                    "transport": {
+                      "const": "http"
+                    }
+                  }
+                },
+                "then": {
+                  "required": ["url"]
+                }
+              },
+              {
+                "if": {
+                  "properties": {
+                    "transport": {
+                      "const": "stdio"
+                    }
+                  }
+                },
+                "then": {
+                  "required": ["command"]
+                }
+              }
+            ]
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["folder_id", "cloud_id"],
+            "properties": {
+              "folder_id": {
+                "type": "string",
+                "enum": ["required", "optional", "unsupported"]
+              },
+              "cloud_id": {
+                "type": "string",
+                "enum": ["required", "optional", "unsupported"]
+              }
+            }
+          },
+          "readme_url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "verified_at": {
+            "type": "string",
+            "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+          },
+          "verified_by": {
+            "type": "string",
+            "enum": ["manual", "script"]
+          },
+          "status": {
+            "type": "string",
+            "enum": ["active", "experimental", "deprecated"]
+          }
+        }
+      }
+    }
+  }
+}

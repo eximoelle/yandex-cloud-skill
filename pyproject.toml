@@ -1,0 +1,14 @@
+[project]
+name = "yandex-cloud-skill-tools"
+version = "0.1.0"
+description = "Utility scripts bundled with yandex-cloud-skill"
+requires-python = ">=3.11"
+dependencies = [
+    "jsonschema>=4.26.0",
+    "pyyaml>=6.0.3",
+]
+
+[tool.uv]
+# Keep uv cache inside the workspace so sandboxed runs don't require access
+# to ~/.cache/uv.
+cache-dir = ".uv-cache"

@@ -1,0 +1,5 @@
+interface:
+  display_name: "Yandex Cloud Skill"
+  short_description: "YC APIs, IaC, MCP, and troubleshooting"
+  default_prompt: "Use $yandex-cloud-skill to solve a practical Yandex Cloud task: API/SDK/yc CLI code, Terraform/IaC, troubleshooting, billing analysis, or MCP setup with official YC sources."
+  icon_small: "./assets/icon_mono_circ.svg"
