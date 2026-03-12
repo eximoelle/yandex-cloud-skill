@@ -19,6 +19,15 @@
   - AWS SDK for Object Storage -> `https://yandex.cloud/ru/docs/storage/tools/sdk`
 - `cloudapi` для fallback-методов.
 
+## Supplementary Example Sources
+
+Используй этот блок только когда пользователь просит рабочий пример кода, а Tier 1 источники описывают API/SDK без готового snippet:
+
+- Tier 2 examples: `https://github.com/yandex-cloud-examples`
+- Tier 3 SDK reference mirror: `https://sdk-docs.nikolaymatrosov.ru/`
+
+Критичные детали из этих источников всегда перепроверяй по Tier 1.
+
 ## SDK Catalog (from Overview)
 
 Используй как справочник "что вообще есть":
@@ -43,6 +52,14 @@
 1. Для разовых live-операций и быстрой диагностики выбирай `yc` CLI.
 2. Для кода и повторяемых интеграций выбирай SDK.
 3. Если метода нет в SDK, используй Cloud API fallback.
+
+## Working Example Rule
+
+1. Сначала найди нужный метод, auth и ограничения в Tier 1.
+2. Затем проверь official SDK repo для нужного языка.
+3. Если готового примера нет, можно взять форму вызова из Tier 2/3.
+4. Tier 2/3 в ответе помечай как вспомогательный, неканонический источник.
+5. Все критичные детали подтверждай по Tier 1.
 
 ## YC CLI Fast Bricks (read-only by default)
 
@@ -119,4 +136,5 @@ Mutating-команды через `yc` CLI выполняй только пос
 5. Для production по умолчанию выбирай service account path из `references/workflows/auth.md`.
 6. Если метода нет в SDK, добавь Cloud API fallback с явной пометкой.
 7. Для mutating-команд через `yc` CLI сначала запроси явное подтверждение пользователя.
-8. Заверши коротким smoke-check.
+8. Если нужен рабочий пример кода, а в Tier 1 его нет, проверь Tier 2/3 и явно обозначь их как вспомогательные источники.
+9. Заверши коротким smoke-check.

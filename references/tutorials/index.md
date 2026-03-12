@@ -56,6 +56,6 @@
 5. Для `terraform_iac` сначала проверь блок `Terraform In Infrastructure Tools (Tier 1)`.
 6. Возьми минимум одну Tier 1 ссылку из каталога выше.
 7. Адаптируй шаги под контекст (`folder_id/cloud_id/region/zone`, IAM, quotas).
-8. При использовании Tier 2 примеров (`yandex-cloud-examples`) подтверди критичные параметры по Tier 1.
+8. При использовании Tier 2 примеров (`yandex-cloud-examples`) или Tier 3 SDK reference mirrors (`sdk-docs.nikolaymatrosov.ru`) подтверди критичные параметры по Tier 1.
 
 Корневая страница каталога: `https://yandex.cloud/ru/docs/tutorials/`.

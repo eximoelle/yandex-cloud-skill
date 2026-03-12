@@ -85,6 +85,7 @@ sources_policy:
       - https://github.com/yandex-cloud-examples
     tier3:
       - https://nikolaymatrosov.ru/
+      - https://sdk-docs.nikolaymatrosov.ru/
 
 auth_decision_table:
   credential_types:
@@ -312,3 +313,23 @@ mcp:
         - "Если MCP для контекста не найден, переходи на generic non-MCP интерфейсы."
         - "Продолжить выполнение задачи без MCP через workflow и Tier 1 источники."
         - "Выбрать минимально сложный интерфейс из interfaces."
+    by_task_type:
+      api_sdk:
+        interfaces:
+          - sdk
+          - yc_cli
+          - cloudapi
+          - terraform
+        official_sources:
+          - https://yandex.cloud/ru/docs
+          - https://github.com/yandex-cloud/cloudapi
+          - https://github.com/yandex-cloud/python-sdk
+          - https://github.com/yandex-cloud/go-sdk
+          - https://github.com/yandex-cloud/nodejs-sdk
+          - https://github.com/yandex-cloud/java-sdk
+          - https://github.com/yandex-cloud/dotnet-sdk
+        next_steps:
+          - "Для запросов на пример кода сначала проверь official docs и нужный official SDK repo."
+          - "Если official docs описывают метод, но не дают готовый working example, можно смотреть Tier 2/3 example/reference источники."
+          - "Tier 2/3 используй только как вспомогательный пример реализации и явно помечай их как неофициальные."
+          - "Названия методов, auth-паттерны, типы запросов/ответов и ограничения всегда подтверждай по Tier 1."
