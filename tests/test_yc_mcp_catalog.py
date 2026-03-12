@@ -5,6 +5,7 @@ import importlib.util
 import json
 import os
 from pathlib import Path
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -66,6 +67,19 @@ class CatalogCliTests(unittest.TestCase):
         payload, code = self.mod._cmd_validate_contracts(self.base_args())
         self.assertEqual(code, 0)
         self.assert_envelope(payload)
+        self.assertEqual(payload["status"], "ok")
+
+    def test_direct_python_bootstraps_runtime_dependencies_via_uv(self) -> None:
+        result = subprocess.run(
+            ["python3", "-S", str(SCRIPT_PATH), "validate-contracts"],
+            cwd=REPO_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertEqual(result.returncode, 0, msg=result.stderr or result.stdout)
+        payload = json.loads(result.stdout)
         self.assertEqual(payload["status"], "ok")
 
     def test_invalid_manifest_fails_validation(self) -> None:

@@ -8,7 +8,9 @@ import json
 import os
 import re
 import shlex
+import shutil
 import subprocess
+import sys
 import time
 from dataclasses import dataclass
 from datetime import UTC, datetime
@@ -17,8 +19,20 @@ from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
 
-import yaml
-from jsonschema import Draft202012Validator
+yaml: Any = None
+Draft202012Validator: Any = None
+
+_MISSING_RUNTIME_DEPS: dict[str, ModuleNotFoundError] = {}
+
+try:
+    import yaml
+except ModuleNotFoundError as exc:
+    _MISSING_RUNTIME_DEPS["PyYAML"] = exc
+
+try:
+    from jsonschema import Draft202012Validator
+except ModuleNotFoundError as exc:
+    _MISSING_RUNTIME_DEPS["jsonschema"] = exc
 
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -44,6 +58,7 @@ STATUS_MODES = {"active", "experimental", "deprecated"}
 NO_MATCH_ERROR = (
     "No MCP server matched requested tags. Refresh catalog or continue in non-MCP mode."
 )
+RUNTIME_BOOTSTRAP_ENV = "YC_MCP_CATALOG_UV_BOOTSTRAPPED"
 
 
 @dataclass
@@ -133,6 +148,72 @@ def _print_json(payload: dict[str, Any]) -> None:
     print(json.dumps(payload, ensure_ascii=False, indent=2))
 
 
+def _missing_runtime_dep_names() -> list[str]:
+    return sorted(_MISSING_RUNTIME_DEPS)
+
+
+def _missing_runtime_dep_message(names: list[str] | None = None) -> str:
+    missing = names or _missing_runtime_dep_names()
+    joined = ", ".join(missing)
+    return (
+        f"Missing runtime dependencies: {joined}. "
+        "Run the CLI via `uv run` or warm the project environment with `uv sync`."
+    )
+
+
+def _runtime_dependency_error_payload() -> dict[str, Any]:
+    return _envelope(
+        status="error",
+        checks=[
+            "Use `uv run scripts/yc_mcp_catalog.py <subcommand>` for automatic dependency bootstrap.",
+            "Run `uv sync` ahead of time if you need a prewarmed offline environment.",
+        ],
+        limitations=[
+            "The CLI cannot read YAML manifests or validate schemas until the runtime dependencies are available."
+        ],
+        sources=["pyproject.toml", "uv.lock"],
+        errors=[
+            _error(
+                "runtime_dependency_missing",
+                _missing_runtime_dep_message(),
+                {
+                    "missing": _missing_runtime_dep_names(),
+                    "uv_available": shutil.which("uv") is not None,
+                },
+            )
+        ],
+    )
+
+
+def _maybe_bootstrap_runtime_dependencies() -> int | None:
+    if not _MISSING_RUNTIME_DEPS:
+        return None
+
+    uv_bin = shutil.which("uv")
+    already_bootstrapped = os.environ.get(RUNTIME_BOOTSTRAP_ENV) == "1"
+    if uv_bin is None or already_bootstrapped:
+        _print_json(_runtime_dependency_error_payload())
+        return 1
+
+    env = os.environ.copy()
+    env[RUNTIME_BOOTSTRAP_ENV] = "1"
+    command = [uv_bin, "run", str(Path(__file__).resolve()), *sys.argv[1:]]
+    completed = subprocess.run(command, env=env, check=False)
+    return completed.returncode
+
+
+def _require_yaml_module() -> Any:
+    if yaml is None:
+        raise RuntimeError(_missing_runtime_dep_message(["PyYAML"]))
+    return yaml
+
+
+def _require_jsonschema_validator() -> Any:
+    if Draft202012Validator is None:
+        raise RuntimeError(_missing_runtime_dep_message(["jsonschema"]))
+    return Draft202012Validator
+
+
 def _load_json(path: Path) -> dict[str, Any]:
     raw = path.read_text(encoding="utf-8")
     parsed = json.loads(raw)
@@ -142,9 +223,10 @@ def _load_json(path: Path) -> dict[str, Any]:
 
 
 def _load_yaml(path: Path) -> dict[str, Any]:
+    yaml_module = _require_yaml_module()
     if not path.exists():
         return {}
-    parsed = yaml.safe_load(path.read_text(encoding="utf-8"))
+    parsed = yaml_module.safe_load(path.read_text(encoding="utf-8"))
     if parsed is None:
         return {}
     if not isinstance(parsed, dict):
@@ -153,15 +235,17 @@ def _load_yaml(path: Path) -> dict[str, Any]:
 
 
 def _dump_yaml(data: dict[str, Any], path: Path) -> None:
+    yaml_module = _require_yaml_module()
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(
-        yaml.safe_dump(data, allow_unicode=True, sort_keys=False),
+        yaml_module.safe_dump(data, allow_unicode=True, sort_keys=False),
         encoding="utf-8",
     )
 
 
 def _schema_errors(data: dict[str, Any], schema: dict[str, Any]) -> list[str]:
-    validator = Draft202012Validator(schema, format_checker=Draft202012Validator.FORMAT_CHECKER)
+    validator_class = _require_jsonschema_validator()
+    validator = validator_class(schema, format_checker=validator_class.FORMAT_CHECKER)
     items: list[str] = []
     for err in validator.iter_errors(data):
         path = ".".join(str(part) for part in err.path)
@@ -1508,6 +1592,10 @@ def parse_args() -> argparse.Namespace:
 
 
 def main() -> int:
+    bootstrap_code = _maybe_bootstrap_runtime_dependencies()
+    if bootstrap_code is not None:
+        return bootstrap_code
+
     args = parse_args()
 
     if args.command == "validate-contracts":
