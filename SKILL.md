@@ -82,6 +82,7 @@ uv run scripts/yc_mcp_catalog.py render-docs
 
 - Для практических вопросов по `api_sdk` сначала открывай `references/tutorials/index.md`.
 - Если нужен рабочий пример кода или разбор SDK-вызова, затем открывай `references/tutorials/sdk.md`.
+- Для кейсов `Certificate Manager` / `Let's Encrypt` / `_acme-challenge` / `Pending` / `Renewing` сначала открывай `references/services/certificate-manager/gotchas.md`.
 - Политику выбора источников и fallback бери только из manifest: `references/contracts/skill_manifest.yaml`.
 
 ## Python Tooling
