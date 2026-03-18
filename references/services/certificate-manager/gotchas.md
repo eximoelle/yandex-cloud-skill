@@ -15,8 +15,8 @@
 1. Для DNS-проверки Certificate Manager нужно использовать только один тип записи:
    - либо `CNAME`;
    - либо `TXT`.
-2. Если выбран способ через `CNAME`, на `_acme-challenge.<domain>` должна быть только запись `CNAME` на `<challenge-id>.cm.yandexcloud.net.`.
-3. При `CNAME`-сценарии ожидаемый `TXT` должен отвечать уже на целевом имени `<challenge-id>.cm.yandexcloud.net.`, а не в DNS-зоне пользователя.
+2. Если выбран способ через `CNAME`, на `_acme-challenge.<domain>` должна быть только запись `CNAME` на `<certificate-id>.cm.yandexcloud.net.`.
+3. При `CNAME`-сценарии ожидаемый `TXT` должен отвечать уже на целевом имени `<certificate-id>.cm.yandexcloud.net.`, а не в DNS-зоне пользователя.
 4. `dig ... TXT +short` может показать две строки:
    - первая строка — это `CNAME target`;
    - вторая строка — это `TXT` на целевом имени.
@@ -32,13 +32,13 @@
 3. Проверить `TXT` именно у авторитативных NS:
    - `dig +noall +answer _acme-challenge.<domain> TXT @<authoritative-ns>`
 4. Если есть `CNAME`, отдельно проверить `TXT` уже на target-имени:
-   - `dig +noall +answer <challenge-id>.cm.yandexcloud.net TXT @1.1.1.1`
+   - `dig +noall +answer <certificate-id>.cm.yandexcloud.net TXT @1.1.1.1`
 
 ### Как интерпретировать результат
 
 - Норма для `CNAME`-сценария:
   - `_acme-challenge.<domain>` возвращает только `CNAME`;
-  - `<challenge-id>.cm.yandexcloud.net` возвращает ожидаемый `TXT`.
+  - `<certificate-id>.cm.yandexcloud.net` возвращает ожидаемый `TXT`.
 - Норма для `TXT`-сценария:
   - `_acme-challenge.<domain>` возвращает ожидаемый `TXT`;
   - `CNAME` на этом имени отсутствует.
